@@ -4,6 +4,10 @@ const ctx = canvas.getContext("2d")
 const weatherDiv = document.getElementById("weather")
 const tempDiv = document.getElementById("temp")
 
+const TEST_MODE = true
+const TEST_WEATHER = "Clear"
+const TEST_HOUR = 21
+
 const API_KEY = "3af3f8c736b5ea40272b6d95ef884bef"
 
 let particles = []
@@ -11,6 +15,7 @@ let mode = "Clear"
 let bgColor = "rgba(0,0,0,0.3)"
 let audio = new Audio()
 let audioEnabled = false
+let fakeHour = 0
 
 navigator.geolocation.getCurrentPosition(pos => {
     const lat = pos.coords.latitude
@@ -18,23 +23,29 @@ navigator.geolocation.getCurrentPosition(pos => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`)
         .then(res => res.json())
         .then(data => {
-            mode = data.weather[0].main
-            weatherDiv.textContent = data.weather[0].main
+            if(TEST_MODE) {
+                mode = TEST_WEATHER
+                fakeHour = TEST_HOUR
+            } else {
+                mode = data.weather[0].main
+                fakeHour = new Date().getHours()
+            }
+            weatherDiv.textContent = mode
             tempDiv.textContent = data.main.temp + "°C"
             setAudio()
         })
 })
 
 function setTimeColor() {
-    const h = new Date().getHours()
+    const h = TEST_MODE ? fakeHour : new Date().getHours()
     if(h >= 6 && h < 16) bgColor = "rgba(50,150,255,0.3)"
-    else if(h >= 16 && h < 19) bgColort = "rgba(255,120,50,0.3)"
+    else if(h >= 16 && h < 19) bgColor = "rgba(255,120,50,0.3)"
     else bgColor = "rgba(10,10,40,0.3)"
 }
 
 function setAudio() {
     if(mode === "Rain") audio.src = "rain.mp3"
-    if(mode === "Clear") audio.src = "sunny.mp3"
+    else if(mode === "Clear") audio.src = "sunny.mp3"
     else audio.src = "wind.mp3"
     audio.loop = true
 }
