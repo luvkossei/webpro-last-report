@@ -6,7 +6,7 @@ const tempDiv = document.getElementById("temp")
 
 const TEST_MODE = false
 const TEST_WEATHER = "Cloude"
-const TEST_HOUR = 21
+const TEST_HOUR = 10
 
 const API_KEY = "3af3f8c736b5ea40272b6d95ef884bef"
 
