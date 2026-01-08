@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d")
 const weatherDiv = document.getElementById("weather")
 const tempDiv = document.getElementById("temp")
 
-const TEST_MODE = true
+const TEST_MODE = false
 const TEST_WEATHER = "Cloude"
 const TEST_HOUR = 21
 
