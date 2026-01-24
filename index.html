@@ -1,36 +1,12 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weather Reactive Visualizer</title>
-<style>
-html, body {
-    margin: 0;
-    padding: 0;
-    background: #000;
-    color: #fff;
-    font-family: sans-serif;
-    text-align: center;
-}
-#info {
-    padding: 10px;
-}
-canvas {
-    display: block;
-    margin: 0 auto;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Reactive Visualizer</title>
 </head>
 <body>
-
-<div id="info">
-    <div id="weather">Loading...</div>
-    <div id="temp"></div>
-</div>
-
-<canvas id="canvas" width="360" height="500"></canvas>
-
-<script src="main.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
