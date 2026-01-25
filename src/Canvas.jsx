@@ -9,56 +9,64 @@ function Canvas({ mode, setWeather, setTemp, setMode }) {
   const audioEnabled = useRef(false)
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext("2d")
+  const canvas = canvasRef.current
+  const ctx = canvas.getContext("2d")
 
-    function createParticles(n) {
-      particles.current = []
-      for (let i = 0; i < n; i++) {
-        particles.current.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: Math.random() * 2 - 1,
-          vy: Math.random() * 2 + 1,
-          r: Math.random() * 2 + 1
-        })
-      }
+  function getTimeColor() {
+    const h = new Date().getHours()
+    if (h >= 6 && h < 16) return "rgba(50,150,255,0.3)"
+    if (h >= 16 && h < 19) return "rgba(255,120,50,0.3)"
+    return "rgba(10,10,40,0.3)"
+  }
+
+  function createParticles(n) {
+    particles.current = []
+    for (let i = 0; i < n; i++) {
+      particles.current.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: Math.random() * 2 - 1,
+        vy: Math.random() * 2 + 1,
+        r: Math.random() * 2 + 1
+      })
+    }
+  }
+
+  createParticles(150)
+
+  function update() {
+    ctx.fillStyle = getTimeColor()
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    if (mode === "Rain") {
+      ctx.strokeStyle = "cyan"
+      particles.current.forEach(p => {
+        ctx.beginPath()
+        ctx.moveTo(p.x, p.y)
+        ctx.lineTo(p.x, p.y + 15)
+        ctx.stroke()
+        p.y += p.vy * 6
+        if (p.y > canvas.height) p.y = 0
+      })
+    } else {
+      ctx.fillStyle = "white"
+      particles.current.forEach(p => {
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+        ctx.fill()
+        p.x += p.vx
+        p.y += p.vy * 0.5
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1
+      })
     }
 
-    createParticles(150)
+    requestAnimationFrame(update)
+  }
 
-    function update() {
-      ctx.fillStyle = "rgba(0,0,0,0.3)"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+  update()
+}, [mode])
 
-      if (mode === "Rain") {
-        ctx.strokeStyle = "cyan"
-        particles.current.forEach(p => {
-          ctx.beginPath()
-          ctx.moveTo(p.x, p.y)
-          ctx.lineTo(p.x, p.y + 15)
-          ctx.stroke()
-          p.y += p.vy * 6
-          if (p.y > canvas.height) p.y = 0
-        })
-      } else {
-        ctx.fillStyle = "white"
-        particles.current.forEach(p => {
-          ctx.beginPath()
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-          ctx.fill()
-          p.x += p.vx
-          p.y += p.vy * 0.5
-          if (p.x < 0 || p.x > canvas.width) p.vx *= -1
-          if (p.y < 0 || p.y > canvas.height) p.vy *= -1
-        })
-      }
-
-      requestAnimationFrame(update)
-    }
-
-    update()
-  }, [mode])
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(pos => {
